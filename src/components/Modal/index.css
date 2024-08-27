@@ -1,0 +1,79 @@
+/* modal.css */
+@keyframes fade-in-bottom {
+  0% {
+    transform: translateY(50px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-out-bottom {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(50px);
+  }
+}
+
+@keyframes fade-in-overlay {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out-overlay {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: #a5a6b985; /* Assuming a semi-transparent black overlay */
+
+  /* Overlay animations */
+  &.in {
+    animation: fade-in-overlay 0.3s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  }
+
+  &.out {
+    animation: fade-out-overlay 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+}
+
+.Modal {
+  margin: 0 auto;
+  max-width: 700px;
+  max-height: fit-content;
+  background-color: #FFFF; /* Assuming a white modal background */
+  padding: 16px;
+  border-radius: 4px;
+
+  /* Modal animations */
+  &.in {
+    animation: fade-in-bottom 0.3s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+  }
+
+  &.out {
+    animation: fade-out-bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+}

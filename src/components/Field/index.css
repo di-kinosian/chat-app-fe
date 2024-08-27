@@ -1,0 +1,19 @@
+.label {
+  margin-bottom: 8px;
+  display: flex;
+}
+
+p {
+  margin: 0;
+}
+
+.required {
+  color: #fe7374;
+  margin-left: 4px;
+}
+
+.errorText {
+  margin-top: 4px;
+  color: #fe7374;
+  font-size: 12px;
+}

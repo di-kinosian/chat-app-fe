@@ -1,0 +1,56 @@
+/* input.css */
+.InputWrapper {
+  display: inline-block;
+  position: relative;
+  height: fit-content;
+}
+
+.Input {
+  box-sizing: border-box;
+  border: 1px solid #f3f3f5;
+  border-radius: 4px;
+  padding: 0 8px;
+  height: 32px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.Input-clearButton {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  bottom: 0;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.Input--invalid {
+  border: 1px solid #fe7374;
+  outline: none;
+}
+
+.Input:focus {
+  border: 1px solid #3e7bfa;
+  outline: none;
+}
+
+.Input--small {
+  height: 24px;
+  font-size: 12px;
+}
+
+.Input--large {
+  height: 40px;
+  font-size: 16px;
+}
+
+.Input--disabled {
+  background-color: #f1f2f5;
+  border: 1px solid #f3f3f5;
+}
+
+.Input--disabled::placeholder {
+  color: #a5a6b9;
+}

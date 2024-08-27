@@ -1,0 +1,11 @@
+.messages-container {
+  background-color: #f9f9f9;
+  padding: 10px;
+  overflow: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 10px;
+}

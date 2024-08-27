@@ -1,0 +1,39 @@
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.own {
+  align-items: flex-end;
+}
+
+.message-container {
+  max-width: 60%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  background-color: #f1f0f0;
+  display: inline-block;
+}
+
+.own .message-container {
+  background-color: #007bff;
+  color: white;
+}
+
+.message-text {
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.message-date {
+  font-size: 10px;
+  color: #999;
+  margin-top: 5px;
+  align-self: flex-start;
+}
+
+.own .message-date {
+  align-self: flex-end;
+}

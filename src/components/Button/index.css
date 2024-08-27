@@ -1,0 +1,120 @@
+.Button {
+  border: 1px solid #3e7bfa;
+  border-radius: 4px;
+  color: #f9fbff;
+  padding: 0 24px;
+  height: 32px;
+  font-size: 14px;
+  background-color: #3e7bfa;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.Button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.Button svg path {
+  stroke: #f9fbff;
+}
+
+.Button:hover {
+  background-color: #386fe1;
+  border-color: #386fe1;
+}
+
+.Button:active {
+  background-color: #3569d4;
+  border-color: #3569d4;
+}
+
+.Button--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.Button--disabled svg circle {
+  stroke: #f9fbff;
+}
+
+.Button--small {
+  height: 24px;
+  font-size: 12px;
+  gap: 4px;
+}
+
+.Button--small svg {
+  width: 12px;
+  height: 12px;
+}
+
+.Button--large {
+  height: 40px;
+  font-size: 16px;
+  gap: 8px;
+}
+
+.Button--large svg {
+  width: 16px;
+  height: 16px;
+}
+
+.Button--secondary {
+  background-color: #f3f8ff;
+  color: #3e7bfa;
+  border-color: #3e7bfa;
+}
+
+.Button--secondary svg path {
+  stroke: #3e7bfa;
+}
+
+.Button--secondary.Button--disabled svg circle {
+  stroke: #3e7bfa;
+}
+
+.Button--secondary:hover {
+  background-color: #e7f1ff;
+}
+
+.Button--secondary:active {
+  background-color: #dbeaff;
+}
+
+.Button--ghost {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #3e7bfa;
+}
+
+.Button--ghost svg path {
+  stroke: #3e7bfa;
+}
+
+.Button--ghost.Button--disabled svg circle {
+  stroke: #3e7bfa;
+}
+
+.Button--ghost:hover {
+  color: #386fe1;
+}
+
+.Button--ghost:hover svg path {
+  stroke: #386fe1;
+}
+
+.loadingWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.loadingText {
+  margin: 0;
+}
