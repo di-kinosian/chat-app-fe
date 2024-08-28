@@ -4,7 +4,7 @@ import "./index.css";
 
 export interface ButtonProps {
   size?: "small" | "medium" | "large";
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "critical";
   disabled?: boolean;
   width?: string;
   isLoading?: boolean;
@@ -32,6 +32,7 @@ export const Button: React.FC<
       "Button--large": size === "large",
       "Button--primary": variant === "primary",
       "Button--secondary": variant === "secondary",
+      "Button--critical": variant === "critical",
       "Button--ghost": variant === "ghost",
     },
     className,

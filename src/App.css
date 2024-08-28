@@ -29,3 +29,35 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.add-button {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: rgb(255, 255, 255);
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  border: 2px solid white;
+  z-index: 3;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.delepe-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

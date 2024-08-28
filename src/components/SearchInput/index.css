@@ -1,0 +1,26 @@
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper .icon-wrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.search-input-wrapper .search-icon {
+  left: 10px;
+}
+
+.search-input-wrapper .clear-icon {
+  right: 10px;
+}
+
+.search-input-wrapper .Input {
+  padding-left: 32px; /* adjust padding to accommodate search icon */
+  padding-right: 32px; /* adjust padding to accommodate clear icon */
+}

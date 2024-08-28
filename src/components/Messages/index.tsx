@@ -1,8 +1,9 @@
 import React from "react";
 import { Message } from "../Message/index.tsx";
 import "./index.css";
+import EditIcon from "../IconsCollection/EditIcon.tsx";
 
-interface IMessage {
+export interface IMessage {
   text: string;
   date: string;
   isOwn: boolean;
@@ -10,9 +11,13 @@ interface IMessage {
 
 interface MessagesProps {
   messages: IMessage[];
+  onEditMessage: (text: string, edit: boolean) => void;
 }
 
-export const Messages: React.FC<MessagesProps> = ({ messages }) => {
+export const Messages: React.FC<MessagesProps> = ({
+  messages,
+  onEditMessage,
+}) => {
   return (
     <div className="messages-container">
       {messages.map((message, index) => (
@@ -21,6 +26,7 @@ export const Messages: React.FC<MessagesProps> = ({ messages }) => {
           text={message.text}
           date={message.date}
           isOwn={message.isOwn}
+          onEdit={() => onEditMessage(message.text, true)}
         />
       ))}
     </div>

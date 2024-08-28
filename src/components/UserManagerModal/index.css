@@ -1,4 +1,4 @@
-.UserManagerModalOverlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,25 +15,35 @@ h2 {
   margin: 0;
 }
 
-.UserManagerModal {
+.user-manager-modal {
   background-color: #fff;
   border-radius: 8px;
   padding: 16px;
   width: 400px;
   max-width: 90%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.UserManagerModalTitle {
+.modal-title {
+  margin-bottom: 16px;
   font-size: 18px;
   font-weight: bold;
 }
 
-.UserManagerModalActions {
+.modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
 }

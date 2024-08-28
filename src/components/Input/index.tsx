@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useMemo, useRef } from "react";
 import classNames from "classnames";
-import "./index.css"; // Import the plain CSS file
+import "./index.css";
 import { ElementSize, InputType } from "../../types.ts";
 
 export interface InputProps

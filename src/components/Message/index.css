@@ -13,7 +13,9 @@
   padding: 10px 15px;
   border-radius: 10px;
   background-color: #f1f0f0;
-  display: inline-block;
+  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  gap: 4px;
 }
 
 .own .message-container {
@@ -36,4 +38,15 @@
 
 .own .message-date {
   align-self: flex-end;
+}
+
+.edit-icon {
+  display: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.message-wrapper.own:hover .edit-icon {
+  display: block;
+  opacity: 1;
 }
