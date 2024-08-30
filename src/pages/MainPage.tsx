@@ -1,23 +1,100 @@
-import React, { useState } from "react";
-import { Input } from "../components/Input/index.tsx";
-import {
-  FormValues,
-  UserManagerModal,
-} from "../components/UserManagerModal/index.tsx";
-import { Avatar } from "../components/Avatar/index.tsx";
-import { Chat, InfoType } from "../components/Chat/index.tsx";
-import { ChatPreview } from "../components/ChatPreview/index.tsx";
-import PlusIcon from "../assets/svg/plus.svg";
-import "../App.js";
+import React, { useEffect, useMemo, useState } from "react";
+import { UserManagerModal } from "../components/UserManagerModal/index.tsx";
+import { Chat } from "../components/Chat/index.tsx";
 import { Modal } from "../components/Modal/index.tsx";
 import { Button } from "../components/Button/index.tsx";
-import { Toast } from "../components/Toast/index.tsx";
-import { SearchInput } from "../components/SearchInput/index.tsx";
+import {
+  createChatRequest,
+  deleteChatRequest,
+  editMessageRequest,
+  getChatByIdRequest,
+  getChatsRequest,
+  sendMessageRequest,
+  updateChatRequest,
+} from "../api/index.ts";
+import { IMessage, InfoType, ServerChat, ServerMessage } from "../types.ts";
+import "../App.js";
+import io from "socket.io-client";
+import { transformMessages } from "../helpers/transformers.ts";
+import ChatPanel from "../components/ChatPanel/index.tsx";
+
+const socket = io("http://localhost:4000");
 
 function MainPage() {
+  const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
+  const [newMessageData, setNewMessageData] = useState<{
+    lastMessage: ServerMessage;
+    chatInfo: InfoType;
+  } | null>(null);
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const [isOpenManagerModal, setIsOpenManagerModal] = useState(false);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  const [editModalData, setEditModalData] = useState<FormValues | null>();
+
+  const [editModalData, setEditModalData] = useState<Omit<
+    InfoType,
+    "avatar"
+  > | null>();
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [chatToDelete, setChatToDelete] = useState<string | null>(null);
+  const [chats, setChats] = useState<ServerChat[]>([]);
+
+  useEffect(() => {
+    getChatsRequest().then((data) => {
+      setChats(data || []);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedChatId) {
+      setIsChatLoading(true);
+      getChatByIdRequest(selectedChatId)
+        .then((data) => {
+          setChatMessages(transformMessages(data.messages));
+        })
+        .finally(() => {
+          setIsChatLoading(false);
+        });
+    }
+  }, [selectedChatId]);
+
+  useEffect(() => {
+    socket.on("message", (updatedChat) => {
+      const chatId = updatedChat._id;
+      const lastMessage = updatedChat.messages[updatedChat.messages.length - 1];
+      if (selectedChatId === chatId) {
+        setChatMessages(transformMessages(updatedChat.messages));
+      }
+      setChats((prevChats) =>
+        prevChats.map((c) =>
+          c.id === chatId
+            ? {
+                ...c,
+                lastMessage:
+                  updatedChat.messages[updatedChat.messages.length - 1],
+              }
+            : c,
+        ),
+      );
+
+      if (lastMessage.sender === "System") {
+        setNewMessageData({
+          chatInfo: {
+            avatar: updatedChat.avatar,
+            firstName: updatedChat.firstName,
+            lastName: updatedChat.lastName,
+            id: chatId,
+          },
+          lastMessage,
+        });
+        setTimeout(() => {
+          setNewMessageData(null);
+        }, 25000);
+      }
+    });
+    return () => {
+      socket.off("message");
+    };
+  }, [selectedChatId]);
 
   const reset = () => {
     setIsOpenManagerModal(false);
@@ -26,28 +103,53 @@ function MainPage() {
 
   const onOpenManagerModal = () => {
     setIsOpenManagerModal(true);
-    setEditModalData(null);
   };
   const onCloseManagerModal = () => {
+    setEditModalData(null);
     reset();
   };
 
-  const onSaveModalData = (firstName: string, lastName: string) => {
-    const chatUser = {
-      firstName,
-      lastName,
-      id: "744939830",
-    };
-    console.log(chatUser);
-    reset();
+  const onSaveModalData = async (firstName: string, lastName: string) => {
+    try {
+      if (editModalData) {
+        await updateChatRequest({
+          id: editModalData.id!,
+          firstName,
+          lastName,
+        });
+
+        setChats((prevChats) =>
+          prevChats.map((chat) =>
+            chat.id === editModalData.id
+              ? { ...chat, firstName, lastName }
+              : chat,
+          ),
+        );
+      } else {
+        const res = await createChatRequest({
+          firstName,
+          lastName,
+        });
+        setChats((prevChats) => [...prevChats, { ...res, id: res._id }]);
+      }
+      reset();
+    } catch (error) {
+      console.error("Error in saving modal data:", error);
+    }
   };
 
-  const onEditModalData = (data: FormValues) => {
+  const selectedChat = useMemo(
+    () => chats.find((c) => c.id === selectedChatId),
+    [selectedChatId, chats],
+  );
+
+  const onEditModalData = (data: Omit<InfoType, "avatar">) => {
     setEditModalData(data);
     setIsOpenManagerModal(true);
   };
 
-  const onOpenDeleteModal = () => {
+  const onOpenDeleteModal = (id: string) => {
+    setChatToDelete(id);
     setIsOpenDeleteModal(true);
   };
 
@@ -55,18 +157,75 @@ function MainPage() {
     setIsOpenDeleteModal(false);
   };
 
-  const handleSearch = (value: string) => {
-    console.log("Searching for:", value);
-    // Add logic for searching users
+  const onDeleteChat = async () => {
+    if (chatToDelete) {
+      try {
+        await deleteChatRequest(chatToDelete);
+        setChats((prevChats) =>
+          prevChats.filter((chat) => chat.id !== chatToDelete),
+        );
+      } catch (error) {
+        console.error("Error deleting chat:", error);
+      } finally {
+        onCloseDeleteModal();
+      }
+    }
+    setChatToDelete(null);
   };
 
-  const userInfo: InfoType = {
-    firstName: "Viktoria",
-    lastName: "Mida",
-    id: "1872687",
-    avatar:
-      "https://lh3.googleusercontent.com/ogw/AF2bZyhNkaae00A_7Tzr-qFYvICs2izmswjgOaagTp1DCehHxC0=s32-c-mo",
+  const handleSendMessage = async (messageText: string) => {
+    if (!selectedChatId) {
+      console.error("No chat selected");
+      return;
+    }
+
+    try {
+      const updatedChat = await sendMessageRequest({
+        chatId: selectedChatId,
+        messageText,
+      });
+
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.id === updatedChat.id ? updatedChat : chat,
+        ),
+      );
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
+
+  const onEditMessage = async (content: string, messageId: string) => {
+    if (!selectedChatId) {
+      console.error("No chat selected");
+      return;
+    }
+
+    try {
+      const updatedChat = await editMessageRequest({
+        chatId: selectedChatId,
+        messageId,
+        newContent: content,
+      });
+
+      setChatMessages(transformMessages(updatedChat.messages));
+
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.id === selectedChatId
+            ? {
+                ...chat,
+                lastMessage:
+                  updatedChat.messages[updatedChat.messages.length - 1],
+              }
+            : chat,
+        ),
+      );
+    } catch (error) {
+      console.error("Error editing message:", error);
+    }
+  };
+
   return (
     <div
       style={{
@@ -74,81 +233,22 @@ function MainPage() {
         height: "100%",
       }}
     >
-      <div
-        style={{
-          width: "400px",
-          borderRight: "1px solid #ddd",
-          flexShrink: 0,
-          display: "flex",
-          flexDirection: "column",
-          transform: "translate(0px, 0px)",
-        }}
-      >
-        <div
-          style={{
-            background: "#f5f5f5",
-            padding: "12px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-            borderBottom: "1px solid #ddd",
-          }}
-        >
-          <Avatar img="https://lh3.googleusercontent.com/ogw/AF2bZyhNkaae00A_7Tzr-qFYvICs2izmswjgOaagTp1DCehHxC0=s32-c-mo" />
-          {/* <Input /> */}
-          <SearchInput
-            onSearch={handleSearch}
-            placeholder="Search for users..."
-          />
-        </div>
-        <div
-          style={{
-            flexGrow: 1,
-            overflow: "auto",
-          }}
-        >
-          {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map((item, index) => (
-            <ChatPreview
-              key={index}
-              info={{
-                firstName: "Nadia",
-                lastName: "Krivorko",
-                id: "1872687",
-                avatar:
-                  "https://lh3.googleusercontent.com/ogw/AF2bZyhNkaae00A_7Tzr-qFYvICs2izmswjgOaagTp1DCehHxC0=s32-c-mo",
-              }}
-              lastMessage={{
-                text: `Hello, What's up?`,
-                date: "2024-08-27 10:00 AM",
-                isOwn: false,
-              }}
-            />
-          ))}
-          <button className="add-button" onClick={onOpenManagerModal}>
-            <img
-              src={PlusIcon}
-              alt=""
-              style={{ width: "36px", height: " 36px" }}
-            />
-          </button>
-          <Toast
-            isVisible={false}
-            info={userInfo}
-            message="Hello! How are you?"
-          />
-        </div>
-      </div>
+      <ChatPanel
+        chats={chats}
+        newMessageData={newMessageData}
+        onAddChat={onOpenManagerModal}
+        onCloseNewMessage={() => setNewMessageData(null)}
+        onSelectChat={setSelectedChatId}
+        selectedChatId={selectedChatId}
+      />
       <Chat
-        editModalData={onEditModalData}
-        openManagerModal={onOpenManagerModal}
-        openDeleteModal={onOpenDeleteModal}
-        info={{
-          firstName: "Nadia",
-          lastName: "Krivorko",
-          id: "1872687",
-          avatar:
-            "https://lh3.googleusercontent.com/ogw/AF2bZyhNkaae00A_7Tzr-qFYvICs2izmswjgOaagTp1DCehHxC0=s32-c-mo",
-        }}
+        info={selectedChat}
+        onEditChat={onEditModalData}
+        onDeleteChat={onOpenDeleteModal}
+        onSendMessage={handleSendMessage}
+        onEditMessage={onEditMessage}
+        messages={chatMessages}
+        isLoading={isChatLoading}
       />
       <UserManagerModal
         isOpen={isOpenManagerModal}
@@ -156,17 +256,15 @@ function MainPage() {
         onSave={onSaveModalData}
         editData={editModalData}
       />
-      <Modal isOpen={isOpenDeleteModal} className="delepe-modal">
+      <Modal isOpen={isOpenDeleteModal} className="delete-modal">
         <h3 style={{ margin: 0 }}>Delete chat</h3>
-        <p>Are you shure you want to delete chat? </p>
+        <p>Are you sure you want to delete chat? </p>
         <div className="modal-actions">
           <Button
             variant="critical"
             type="submit"
             onClick={() => {
-              console.log("modal was deleted");
-
-              onCloseDeleteModal();
+              onDeleteChat();
             }}
           >
             Delete

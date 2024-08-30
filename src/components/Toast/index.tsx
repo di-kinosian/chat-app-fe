@@ -1,24 +1,23 @@
 import React from "react";
 import "./index.css";
 import CrossIcon from "../IconsCollection/CrossIcon.tsx";
-import { InfoType } from "../Chat";
+import { InfoType } from "../../types.ts";
 
 interface ToastProps {
-  isVisible: boolean;
-  info: InfoType;
-  message: string;
-  className?: string;
+  info?: InfoType;
+  message?: string;
+  onClick: (id: string) => void;
+  onClose: () => void;
 }
 
-export const Toast: React.FC<ToastProps> = ({
-  isVisible,
-  info,
-  message,
-  className = "",
-}) => {
-  if (!isVisible) return null;
+export const Toast: React.FC<ToastProps> = ({ info, message, onClick, onClose }) => {
+  const handleCloseClick = (e) => {
+    e.stopPropagation()
+    onClose()
+  }
+  if (!info) return null;
   return (
-    <div className={`toast-container ${className}`}>
+    <div className={`toast-container`} onClick={() => onClick(info.id)}>
       <div
         style={{
           position: "relative",
@@ -27,7 +26,7 @@ export const Toast: React.FC<ToastProps> = ({
           gap: 8,
         }}
       >
-        <CrossIcon className="cross" />
+        <CrossIcon className="cross" onClick={handleCloseClick}/>
         <img
           src={info.avatar}
           alt={`${info.firstName} ${info.lastName}`}

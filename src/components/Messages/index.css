@@ -9,3 +9,8 @@
   flex-grow: 1;
   gap: 10px;
 }
+
+.messages-container.loading {
+  align-items: center;
+  justify-content: center;
+}

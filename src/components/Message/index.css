@@ -16,6 +16,7 @@
   transition: background-color 0.2s ease-in-out;
   display: flex;
   gap: 4px;
+  position: relative;
 }
 
 .own .message-container {
@@ -44,9 +45,11 @@
   display: none;
   cursor: pointer;
   transition: opacity 0.2s ease-in-out;
+  position: absolute;
+  left: -24px;
 }
 
 .message-wrapper.own:hover .edit-icon {
-  display: block;
+  display: block; 
   opacity: 1;
 }

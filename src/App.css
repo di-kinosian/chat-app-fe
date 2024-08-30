@@ -56,7 +56,7 @@ body {
   gap: 10px;
 }
 
-.delepe-modal {
+.delete-modal {
   display: flex;
   flex-direction: column;
   gap: 16px;

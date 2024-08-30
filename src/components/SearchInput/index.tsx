@@ -17,23 +17,24 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
 
-  const handleSearch = () => {
-    onSearch(inputValue);
-  };
-
   const handleClear = () => {
     setInputValue("");
     onSearch("");
   };
 
+  const onChange = (e) => {
+    setInputValue(e.target.value)
+    onSearch(e.target.value)
+  }
+
   return (
     <div className={`search-input-wrapper ${className}`}>
-      <div className="icon-wrapper search-icon" onClick={handleSearch}>
+      <div className="icon-wrapper search-icon">
         <SearchIcon size={20} />
       </div>
       <Input
         value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={onChange}
         placeholder={placeholder}
         clearable={false}
       />

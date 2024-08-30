@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
-import "./index.css"; // Import the plain CSS file
+import "./index.css";
 
 export interface ModalProps {
   className?: string;
@@ -24,7 +24,7 @@ export const Modal: React.FC<ModalProps> = ({
     } else {
       setTimeout(() => {
         setIsMounted(false);
-      }, 300); // Match the CSS animation duration
+      }, 300);
     }
   }, [isOpen]);
 

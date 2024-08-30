@@ -1,7 +1,17 @@
 import React, { forwardRef, useCallback, useMemo, useRef } from "react";
 import classNames from "classnames";
 import "./index.css";
-import { ElementSize, InputType } from "../../types.ts";
+
+export enum ElementSize {
+  Small = "small",
+  Medium = "medium",
+  Large = "large",
+}
+
+export enum InputType {
+  Text = "text",
+  Password = "password",
+}
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
