@@ -18,7 +18,7 @@ import io from "socket.io-client";
 import { transformMessages } from "../helpers/transformers.ts";
 import ChatPanel from "../components/ChatPanel/index.tsx";
 
-const socket = io("http://localhost:4000");
+const socket = io(process.env.REACT_APP_BE_URL || '');
 
 function MainPage() {
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);

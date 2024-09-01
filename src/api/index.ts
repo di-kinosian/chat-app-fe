@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:4000";
+const url = process.env.REACT_APP_BE_URL;
 
 type CreateChatPayload = {
   firstName: string;
