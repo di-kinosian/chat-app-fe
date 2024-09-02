@@ -50,7 +50,6 @@ const UserManagerModalContent: React.FC<UserManagerModalProps> = ({
 
   const onSubmit = async (data: FormValues) => {
     await onSave(data.firstName, data.lastName);
-    reset();
   };
 
   return (
@@ -81,7 +80,7 @@ const UserManagerModalContent: React.FC<UserManagerModalProps> = ({
           <Button variant="primary" type="submit">
             {editData ? "Change" : "Save"}
           </Button>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose} type="button">
             Cancel
           </Button>
         </div>

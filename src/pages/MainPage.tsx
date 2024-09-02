@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { UserManagerModal } from "../components/UserManagerModal/index.tsx";
 import { Chat } from "../components/Chat/index.tsx";
 import { Modal } from "../components/Modal/index.tsx";
@@ -18,7 +18,7 @@ import io from "socket.io-client";
 import { transformMessages } from "../helpers/transformers.ts";
 import ChatPanel from "../components/ChatPanel/index.tsx";
 
-const socket = io(process.env.REACT_APP_BE_URL || '');
+const socket = io(process.env.REACT_APP_BE_URL || "");
 
 function MainPage() {
   const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
@@ -96,47 +96,49 @@ function MainPage() {
     };
   }, [selectedChatId]);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setIsOpenManagerModal(false);
     setEditModalData(null);
-  };
+  }, []);
 
   const onOpenManagerModal = () => {
     setIsOpenManagerModal(true);
   };
   const onCloseManagerModal = () => {
-    setEditModalData(null);
     reset();
   };
 
-  const onSaveModalData = async (firstName: string, lastName: string) => {
-    try {
-      if (editModalData) {
-        await updateChatRequest({
-          id: editModalData.id!,
-          firstName,
-          lastName,
-        });
+  const onSaveModalData = useCallback(
+    async (firstName: string, lastName: string) => {
+      try {
+        if (editModalData) {
+          await updateChatRequest({
+            id: editModalData.id!,
+            firstName,
+            lastName,
+          });
 
-        setChats((prevChats) =>
-          prevChats.map((chat) =>
-            chat.id === editModalData.id
-              ? { ...chat, firstName, lastName }
-              : chat,
-          ),
-        );
-      } else {
-        const res = await createChatRequest({
-          firstName,
-          lastName,
-        });
-        setChats((prevChats) => [...prevChats, { ...res, id: res._id }]);
+          setChats((prevChats) =>
+            prevChats.map((chat) =>
+              chat.id === editModalData.id
+                ? { ...chat, firstName, lastName }
+                : chat,
+            ),
+          );
+        } else {
+          const res = await createChatRequest({
+            firstName,
+            lastName,
+          });
+          setChats((prevChats) => [...prevChats, { ...res, id: res._id }]);
+        }
+        reset();
+      } catch (error) {
+        console.error("Error in saving modal data:", error);
       }
-      reset();
-    } catch (error) {
-      console.error("Error in saving modal data:", error);
-    }
-  };
+    },
+    [editModalData, reset],
+  );
 
   const selectedChat = useMemo(
     () => chats.find((c) => c.id === selectedChatId),

@@ -47,7 +47,6 @@ export const Button: React.FC<
     >
       {isLoading ? (
         <div className="loadingWrapper">
-          {/* Replace this with your custom Loader */}
           <span className="loadingText">{loadingText}</span>
         </div>
       ) : (
